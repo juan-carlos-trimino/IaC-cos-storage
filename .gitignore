@@ -9,6 +9,7 @@
 # ... and these files under the 'tf' directory...
 !tf/
 tf/*
+!tf/.gitkeep
 # ... and this directory...
 !tf/ibm-cos/
 tf/ibm-cos/*
