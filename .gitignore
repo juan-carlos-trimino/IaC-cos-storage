@@ -1,0 +1,18 @@
+# Ignore everything.
+**
+
+# But include these files...
+!.gitignore
+!LICENSE
+!README.md
+
+# ... and these files under the 'tf' directory...
+!tf/
+tf/*
+# ... and this directory...
+!tf/ibm-cos/
+tf/ibm-cos/*
+!tf/ibm-cos/data.tf
+!tf/ibm-cos/providers.tf
+!tf/ibm-cos/resource-group.tf
+!tf/ibm-cos/variables_no_push.tf.template
