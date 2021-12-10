@@ -27,17 +27,6 @@ variable resource_group_name {
   default = "********"
 }
 
-variable bucket_name {
-  description = "The name of the bucket (required)."
-  default = "cos-bucket-memories"
-}
-
-variable storage_class {
-  description = "The storage class that you want to use for the bucket (required)."
-  # Supported values are: standard, vault, cold, flex, and smart.
-  default = "smart"
-}
-
 variable region_location {
   description = "The location of a regional bucket."
   # Supported values are: au-syd, eu-de, eu-gb, jp-tok, us-east, us-south, ca-tor, jp-osa, br-sao.
@@ -48,7 +37,7 @@ variable region_location {
 
 variable plan {
   description = "The name of the plan type supported by service (required)."
-  default = "lite"
+  default = "******"
 }
 
 variable location {
