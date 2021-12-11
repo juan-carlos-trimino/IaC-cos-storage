@@ -55,4 +55,5 @@ tf/ibm-cos/modules/bucket/*
 tf/ibm-cos/modules/instance/*
 !tf/ibm-cos/modules/instance/main.tf
 !tf/ibm-cos/modules/instance/variables_no_push.tf.template
+!tf/ibm-cos/modules/instance/variables.tf
 !tf/ibm-cos/modules/instance/versions.tf
