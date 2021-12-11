@@ -1,27 +1,6 @@
-/***
-----------------------------------------------------
-A Terraform reusable module for provisioning storage
-----------------------------------------------------
-
-Using Terraform to provision storage
-------------------------------------
-(1) Use Terraform to create the infrastructure in the cloud.
-
-Use Terraform
--------------
-To initialize Terraform and install the various providers.
-> terraform init
-
-To create the infrastructure.
--auto-approve - Enable automatic approval; no human intervention is required.
-> terraform apply -auto-approve
-
-To destroy the infrastructure.
-> terraform destroy -auto-approve
-***/
-/***
-Input variables for the module.
-***/
+###################################
+# Input variables for the module. #
+###################################
 variable "resource_group_id" {}
 
 variable "plan" {}
@@ -33,6 +12,10 @@ variable "bucket_name" {}
 variable "region_location" {}
 
 variable "storage_class" {}
+
+variable "force_delete" {
+  type = bool
+}
 
 variable "service_type" {
   default = "cloud-object-storage"
@@ -53,6 +36,32 @@ variable "delete_timeout" {
   default = "10m"
 }
 
+variable "expire_rules" {
+  description = "An expiration rule deletes objects after a defined period (from the object creation date)."
+  type = list(object({
+    rule_id = string
+    enable = bool
+    days = string
+    prefix = string
+  }))
+  default = []
+}
+
+
+
+
+
+data "ibm_resource_instance" "cos-instance-memories" {
+  name              = "cos-memories-9f021190"
+  location          = var.location
+  resource_group_id = var.resource_group_id
+  service           = "cloud-object-storage"
+}
+
+
+
+
+
 /***
 Bucket names must be globally unique and DNS-compliant; names between 3 and 63 characters long must
 be made of lowercase letters, numbers, and dashes. Bucket names must begin and end with a lowercase
@@ -71,21 +80,31 @@ If the Object Storage service instance is deleted, all bucket names in that inst
 in reserve by the system for 7 days. After 7 days the names will be released for re-use.
 ***/
 resource "ibm_cos_bucket" "cos-bucket-memories" {
-  bucket_name = "${var.bucket_name}-${random_string.unique-string.result}"
-  resource_instance_id = ibm_resource_instance.cos-instance-memories.id
+  bucket_name = var.bucket_name
+  resource_instance_id = data.ibm_resource_instance.cos-instance-memories.id
   region_location = var.region  #Resiliency.
   storage_class = var.storage_class
-  expire_rule {
-    rule_id = "cos-expire-rule-memories"
-    enable = true
-    days = 30
+  force_delete = var.force_delete != null ? var.force_delete : true
+  dynamic "expire_rule" {
+    for_each = [for elem in var.expire_rules : {
+      rule_id = elem.rule_id
+      enable = lookup(elem, "enable", true)
+      days = lookup(elem, "days", 180)
+      prefix = lookup(elem, "prefix", "logs/")
+    }]
+    content {
+      rule_id = expire_rule.value.rule_id
+      enable = expire_rule.value.enable
+      days = expire_rule.value.days
+      prefix = expire_rule.value.prefix
+    }
   }
 }
 
 resource "ibm_resource_key" "cos-manager-memories" {
   name = "cos-manager-memories"
   role = "Manager"
-  resource_instance_id = ibm_resource_instance.cos-instance-memories.id
+  resource_instance_id = data.ibm_resource_instance.cos-instance-memories.id
   parameters = {
     "HMAC" = true
   }
