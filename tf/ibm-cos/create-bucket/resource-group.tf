@@ -1,4 +1,4 @@
-resource "random_id" "postfix-bucket" {
-  count = var.bucket_count
-  byte_length = 4
+resource "random_id" "bucket-name-postfix" {
+  count = length(var.bucket_names)
+  byte_length = 6
 }
