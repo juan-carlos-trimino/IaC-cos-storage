@@ -3,8 +3,8 @@ module "cos-bucket" {
   source = "../modules/bucket"
   count = length(var.bucket_names)
   bucket_name = (var.bucket_name_postfix ?
-              "${var.bucket_names[count.index]}${random_id.bucket-name-postfix[count.index].hex}" :
-              var.bucket_names[count.index])
+                 "${var.bucket_names[count.index]}${random_id.bucket-name-postfix[count.index].hex}" :
+                 var.bucket_names[count.index])
   resource_group_id = data.ibm_resource_group.rg.id
   plan = var.plan[count.index]
   location = var.location[count.index]
