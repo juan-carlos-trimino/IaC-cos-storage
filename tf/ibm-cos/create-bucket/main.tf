@@ -1,4 +1,4 @@
-module "bucket" {
+module "cos-bucket" {
   # Specify the location of the module, which contains the file main.tf.
   source = "../modules/bucket"
   count = length(var.bucket_names)
@@ -10,11 +10,11 @@ module "bucket" {
   location = var.location[count.index]
   region_location = var.region_location[count.index]
   storage_class = var.storage_class[count.index]
-  force_delete = var.force_delete[count.index] != null ? var.force_delete[count.index] : true
-  expire_rules = [{
-    rule_id = "${var.bucket_names[count.index]}expire-rule"
-    enable = true
-    days = 3
-    prefix = "logs/"
-  }]
+  force_delete = var.force_delete[count.index]
+  endpoint_type = var.endpoint_type[count.index]
+  allowed_ip = var.allowed_ip[count.index]
+  expire_rules = var.expire_rules[count.index]
+  activity_tracking = var.activities_tracking[count.index]
+  metrics_monitoring = var.metrics_monitoring[count.index]
+  archive_rule = var.archive_rules[count.index]
 }

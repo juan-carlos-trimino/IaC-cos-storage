@@ -49,3 +49,77 @@ force_delete = [
   false,
   null
 ]
+
+endpoint_type = [
+  "public",
+  null
+]
+
+allowed_ip = [
+  # [
+  #   "ip_address",
+  #   "ip_address"
+  # ],
+  # [
+  #   "ip_address"
+  # ]
+  null,
+  null
+]
+
+expire_rules = [
+  [
+    {
+      enable = true
+      days = 3
+      prefix = "logs/"
+    },
+    {
+      enable = true
+      days = 33
+      prefix = "logs/"
+    }
+  ],
+  [
+    {
+      enable = false
+      days = 2
+      prefix = null
+    }
+  ]
+]
+
+activities_tracking = [
+  {
+    activity_tracker_crn = ""
+    read_data_events = true
+    write_data_events = true
+  },
+  null
+]
+
+metrics_monitoring = [
+  {
+    metrics_monitoring_crn = ""
+    request_metrics_enabled = false
+    usage_metrics_enabled = false
+  },
+  {
+    metrics_monitoring_crn = null
+    request_metrics_enabled = false
+    usage_metrics_enabled = false
+  }
+]
+
+archive_rules = [
+  {
+    enable = true
+    days = 30
+    type = "Glacier"
+  },
+  {
+    enable = false
+    days = 30
+    type = "Glacier"
+  }
+]

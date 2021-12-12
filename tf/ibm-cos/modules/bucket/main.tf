@@ -1,32 +1,38 @@
 ###################################
 # Input variables for the module. #
 ###################################
-variable "resource_group_id" {}
+variable resource_group_id {}
 
-variable "plan" {}
+variable plan {}
 
-variable "location" {}
+variable location {}
 
-variable "bucket_name" {}
+variable bucket_name {}
 
-variable "region_location" {}
+variable region_location {}
 
-variable "storage_class" {}
+variable storage_class {}
 
-variable "force_delete" {
+variable endpoint_type {}
+
+variable allowed_ip {
+  type = list(string)
+}
+
+variable force_delete {
   type = bool
 }
 
-variable "service_type" {
+variable service_type {
   default = "cloud-object-storage"
 }
 
-variable "create_timeout" {
+variable create_timeout {
   description = "(Default 10 minutes) Used for Creating Instance."
   default = "10m"
 }
 
-variable "update_timeout" {
+variable update_timeout {
   description = "(Default 10 minutes) Used for Updating Instance."
   default = "10m"
 }
@@ -36,10 +42,9 @@ variable "delete_timeout" {
   default = "10m"
 }
 
-variable "expire_rules" {
+variable expire_rules {
   description = "An expiration rule deletes objects after a defined period (from the object creation date)."
   type = list(object({
-    rule_id = string
     enable = bool
     days = string
     prefix = string
@@ -47,12 +52,42 @@ variable "expire_rules" {
   default = []
 }
 
+variable metrics_monitoring {
+  description = "Enable metrics tracking with IBM Cloud Monitoring."
+  type = object({
+    metrics_monitoring_crn = string
+    request_metrics_enabled = bool
+    usage_metrics_enabled = bool
+  })
+}
+
+variable activity_tracking {
+  description = "The CRN of the IBM Cloud Activity Tracker service instance to send the events."
+  type = object({
+    activity_tracker_crn = string
+    read_data_events = bool
+    write_data_events = bool
+  })
+  default = null
+}
+
+variable archive_rule {
+  description = "Archive is available in certain regions only."
+  type = object({
+    enable = bool
+    days = number
+    type = string
+  })
+  default = null
+}
+
+
 
 
 
 
 data "ibm_resource_instance" "cos-instance-memories" {
-  name              = "cos-memories-9f021190"
+  name              = "cos-memories-a8eb4d25f69d"
   location          = var.location
   resource_group_id = var.resource_group_id
   service           = "cloud-object-storage"
@@ -84,19 +119,52 @@ resource "ibm_cos_bucket" "cos-bucket-memories" {
   resource_instance_id = data.ibm_resource_instance.cos-instance-memories.id
   region_location = var.region  #Resiliency.
   storage_class = var.storage_class
+  endpoint_type = var.endpoint_type != null ? var.endpoint_type : "public"
   force_delete = var.force_delete != null ? var.force_delete : true
+  allowed_ip = var.allowed_ip != null ? var.allowed_ip : null
   dynamic "expire_rule" {
-    for_each = [for elem in var.expire_rules : {
-      rule_id = elem.rule_id
-      enable = lookup(elem, "enable", true)
-      days = lookup(elem, "days", 180)
-      prefix = lookup(elem, "prefix", "logs/")
+    for_each = [for e in var.expire_rules: {
+      rule_id = "${var.bucket_name}-expire-rule-${index(var.expire_rules, e)}"
+      enable = lookup(e, "enable", true)
+      days = lookup(e, "days", 180)
+      prefix = lookup(e, "prefix", "logs/")
     }]
     content {
       rule_id = expire_rule.value.rule_id
       enable = expire_rule.value.enable
       days = expire_rule.value.days
       prefix = expire_rule.value.prefix
+    }
+  }
+  dynamic "metrics_monitoring" {
+    for_each = (var.metrics_monitoring == null ? [] :
+               (var.metrics_monitoring.metrics_monitoring_crn == null ||
+                var.metrics_monitoring.metrics_monitoring_crn == "" ? [] :
+                tolist([var.metrics_monitoring])))
+    content {
+      metrics_monitoring_crn = metrics_monitoring.value.metrics_monitoring_crn
+      request_metrics_enabled = lookup(metrics_monitoring.value, "request_metrics_enabled", false)
+      usage_metrics_enabled = lookup(metrics_monitoring.value, "usage_metrics_enabled", false)
+    }
+  }
+  dynamic "activity_tracking" {
+    for_each = (var.activity_tracking == null ? [] :
+               (var.activity_tracking.activity_tracker_crn == null ||
+                var.activity_tracking.activity_tracker_crn == "" ? [] :
+                tolist([var.activity_tracking])))
+    content {
+      activity_tracker_crn = activity_tracking.value.activity_tracker_crn
+      read_data_events = lookup(activity_tracking.value, "read_data_events", false)
+      write_data_events = lookup(activity_tracking.value, "write_data_events", false)
+    }
+  }
+  dynamic "archive_rule" {
+    for_each = var.archive_rule == null ? [] : tolist([var.archive_rule])
+    content {
+      rule_id = "${var.bucket_name}-archive-rule"
+      enable = lookup(archive_rule.value, "enable", true)
+      days = lookup(archive_rule.value, "days", 0)
+      type = lookup(archive_rule.value, "type", "Glacier")
     }
   }
 }

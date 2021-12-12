@@ -21,6 +21,6 @@
 instance_name_postfix = true
 
 instance_names = [
-  "cos-memories-",
   "cos-memories-"
+#  "cos-memories-"
 ]
