@@ -35,25 +35,20 @@ region_location = [
   "br-sao"
 ]
 
-plan = [
-  "lite",
-  "standard"
-]
-
-location = [
-  "global",
-  "global"
+endpoint_type = [
+  "s3.private.us-south.cloud-object-storage.appdomain.cloud",
+  "s3.private.br-sao.cloud-object-storage.appdomain.cloud"
 ]
 
 force_delete = [
   false,
-  null
+  null  # Same as true.
 ]
 
-endpoint_type = [
-  "public",
-  null
-]
+
+
+
+
 
 allowed_ip = [
   # [
@@ -123,3 +118,21 @@ archive_rules = [
     type = "Glacier"
   }
 ]
+
+
+
+
+
+plan = [
+  "lite",
+  "standard"
+]
+
+
+location = [
+  "global",
+  "global"
+]
+
+
+

@@ -98,14 +98,6 @@ data "ibm_resource_instance" "cos-instance-memories" {
 
 
 /***
-Bucket names must be globally unique and DNS-compliant; names between 3 and 63 characters long must
-be made of lowercase letters, numbers, and dashes. Bucket names must begin and end with a lowercase
-letter or number. Bucket names resembling IP addresses are not allowed. Bucket names must be unique
-because all buckets in the public cloud share a global namespace, allowing access to buckets
-without the need to provide any service instance or account information. It is not possible to
-create a bucket with a name beginning with "cosv1-" or "account-" as these prefixes are reserved by
-the system.
-
 Delete a bucket
 A DELETE issued to an empty bucket deletes the bucket. The name of the bucket will be held in
 reserve by the system for 10 minutes after the deletion. After 10 minutes the name will be released
