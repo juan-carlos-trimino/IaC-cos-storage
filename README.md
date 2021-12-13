@@ -58,6 +58,7 @@ The location of a regional bucket. Supported values are `au-syd`, `eu-de`, `eu-g
 ```
 region_location = [
   "us-south",
+  "us-south",
   "br-sao"
 ]
 ```
@@ -70,8 +71,8 @@ The type of endpoint (`public` (default), `private`, or `direct`) to be used for
 
 ```
 endpoint_type = [
-  "s3.private.us-south.cloud-object-storage.appdomain.cloud",
-  "s3.private.br-sao.cloud-object-storage.appdomain.cloud"
+  "public",
+  "public"
 ]
 ```
 ***
@@ -91,39 +92,36 @@ force_delete will timeout on buckets with a large amount of objects. Twenty-four
 ```
 force_delete = [
   false,
-  null  # Same as true.
+  true
 ]
 ```
 ***
 <br>
 
-
-
-
 > allowed_ip (Optional, list(list(string)))
 
-A list of IPv4 or IPv6 addresses in CIDR notation to allow access to the IBM COS bucket.xxxx
+A list of (IPv4 or IPv6 addresses in CIDR format) allowed continuous non-overlapping IP address ranges for the container. If a request from a client IP that is not in this IP address list, the client request would be rejected. If not provided, bucket is allowed to be accessed from any IP address.
 
 ```
 allowed_ip = [
   # [
-  #   "ip_address",
-  #   "ip_address"
+  #   "192.168.10.0/24",
+  #   "192.168.25.200/32"
   # ],
   # [
-  #   "ip_address"
+  #   "192.169.10.100/30"
   # ]
   null,
   null
 ]
 ```
+***
+<br>
 
-> expire_rules (list(list(object({\
-                  enable = bool\
-                  days = string\
-                  prefix = string\
-                })))\
-               )
+> expire_rules (Required, list(list(object({enable = bool days = string prefix = string}))))
+
+An expiration rule deletes objects after a defined period (from the object creation date). For more information, see [Deleting stale data with expiration rules](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-expiry)
+
 ```
 expire_rules = [
   [
@@ -134,31 +132,49 @@ expire_rules = [
     },
     {
       enable = true
-      days = 33
-      prefix = "logs/"
+      days = 365
+      prefix = "videos/"
     }
   ],
   [
     {
       enable = false
-      days = 2
+      days = 25
       prefix = null
     }
   ]
 ]
 ```
+***
+<br>
 
-> activities_tracking ()
+> activities_tracking (Optional, list(list(object({activity_tracker_crn = string read_data_events = bool write_data_events = bool}))))
+
+
+Object to enable auditing with IBM Cloud Activity Tracker - Optional - Configure your IBM Cloud Activity Tracker service instance and the type of events that you want to send to your service to audit activity against your bucket. For a list of supported actions, see Bucket actions.
+[Bucket events](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-at-events#at-actions-mngt-2)
+
+For more information, see [IBM Cloud Activity Tracker](https://cloud.ibm.com/docs/activity-tracker?topic=activity-tracker-getting-started).
+
+
+
+
+
 ```
 activities_tracking = [
-  {
-    activity_tracker_crn = ""
-    read_data_events = true
-    write_data_events = true
-  },
+  [
+    {
+      activity_tracker_crn = ""
+      read_data_events = true
+      write_data_events = true
+    }
+  ],
   null
 ]
 ```
+
+
+
 
 > metrics_monitoring ()
 ```

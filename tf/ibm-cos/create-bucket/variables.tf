@@ -25,15 +25,11 @@ variable force_delete {
   type = list(bool)
 }
 
-
-
-
 variable allowed_ip {
   type = list(list(string))
 }
 
 variable expire_rules {
-  description = "An expiration rule deletes objects after a defined period (from the object creation date)."
   type = list(list(object({
     enable = bool
     days = string
@@ -42,13 +38,15 @@ variable expire_rules {
 }
 
 variable activities_tracking {
-  description = "The CRN of the IBM Cloud Activity Tracker service instance to send the events."
-  type = list(object({
+  type = list(list(object({
     activity_tracker_crn = string
     read_data_events = bool
     write_data_events = bool
-  }))
+  })))
 }
+
+
+
 
 variable metrics_monitoring {
   description = "Enable metrics tracking with IBM Cloud Monitoring."

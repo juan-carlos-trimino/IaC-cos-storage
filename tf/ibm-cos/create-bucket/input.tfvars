@@ -36,19 +36,14 @@ region_location = [
 ]
 
 endpoint_type = [
-  "s3.private.us-south.cloud-object-storage.appdomain.cloud",
-  "s3.private.br-sao.cloud-object-storage.appdomain.cloud"
+  "private",
+  "private"
 ]
 
 force_delete = [
   false,
-  null  # Same as true.
+  true
 ]
-
-
-
-
-
 
 allowed_ip = [
   # [
@@ -71,27 +66,33 @@ expire_rules = [
     },
     {
       enable = true
-      days = 33
-      prefix = "logs/"
+      days = 365
+      prefix = "videos/"
     }
   ],
   [
     {
       enable = false
-      days = 2
+      days = 25
       prefix = null
     }
   ]
 ]
 
 activities_tracking = [
-  {
-    activity_tracker_crn = ""
-    read_data_events = true
-    write_data_events = true
-  },
+  [
+    {
+      activity_tracker_crn = ""
+      read_data_events = true
+      write_data_events = true
+    }
+  ],
   null
 ]
+
+
+
+
 
 metrics_monitoring = [
   {
