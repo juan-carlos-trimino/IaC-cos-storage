@@ -1,15 +1,17 @@
 ###################################
 # Input variables for the module. #
 ###################################
+variable resource_instance_name {}
+
 variable resource_group_id {}
-
-variable plan {}
-
-variable location {}
 
 variable bucket_name {}
 
 variable region_location {}
+
+variable cross_region_location {}
+
+variable single_site_location {}
 
 variable storage_class {}
 
@@ -27,20 +29,20 @@ variable service_type {
   default = "cloud-object-storage"
 }
 
-variable create_timeout {
-  description = "(Default 10 minutes) Used for Creating Instance."
-  default = "10m"
-}
+# variable create_timeout {
+#   description = "(Default 10 minutes) Used for Creating Instance."
+#   default = "10m"
+# }
 
-variable update_timeout {
-  description = "(Default 10 minutes) Used for Updating Instance."
-  default = "10m"
-}
+# variable update_timeout {
+#   description = "(Default 10 minutes) Used for Updating Instance."
+#   default = "10m"
+# }
 
-variable "delete_timeout" {
-  description = "(Default 10 minutes) Used for Deleting Instance."
-  default = "10m"
-}
+# variable "delete_timeout" {
+#   description = "(Default 10 minutes) Used for Deleting Instance."
+#   default = "10m"
+# }
 
 variable expire_rules {
   description = "An expiration rule deletes objects after a defined period (from the object creation date)."
@@ -49,7 +51,6 @@ variable expire_rules {
     days = string
     prefix = string
   }))
-  default = []
 }
 
 variable metrics_monitoring {
@@ -61,14 +62,13 @@ variable metrics_monitoring {
   })
 }
 
-variable activity_tracking {
+variable activities_tracking {
   description = "The CRN of the IBM Cloud Activity Tracker service instance to send the events."
-  type = object({
+  type = list(object({
     activity_tracker_crn = string
     read_data_events = bool
     write_data_events = bool
-  })
-  default = null
+  }))
 }
 
 variable archive_rule {
@@ -78,24 +78,11 @@ variable archive_rule {
     days = number
     type = string
   })
-  default = null
 }
 
-
-
-
-
-
-data "ibm_resource_instance" "cos-instance-memories" {
-  name              = "cos-memories-a8eb4d25f69d"
-  location          = var.location
-  resource_group_id = var.resource_group_id
-  service           = "cloud-object-storage"
+data "ibm_resource_instance" "cos-instance" {
+  name = var.resource_instance_name
 }
-
-
-
-
 
 /***
 Delete a bucket
@@ -106,10 +93,12 @@ for re-use. Only empty buckets can be deleted.
 If the Object Storage service instance is deleted, all bucket names in that instance will be held
 in reserve by the system for 7 days. After 7 days the names will be released for re-use.
 ***/
-resource "ibm_cos_bucket" "cos-bucket-memories" {
+resource "ibm_cos_bucket" "cos-bucket" {
   bucket_name = var.bucket_name
-  resource_instance_id = data.ibm_resource_instance.cos-instance-memories.id
-  region_location = var.region  #Resiliency.
+  resource_instance_id = data.ibm_resource_instance.cos-instance.id
+  region_location = var.region_location  #Resiliency.
+  cross_region_location = var.cross_region_location
+  single_site_location = var.single_site_location
   storage_class = var.storage_class
   endpoint_type = var.endpoint_type != null ? var.endpoint_type : "public"
   force_delete = var.force_delete != null ? var.force_delete : true
@@ -140,14 +129,15 @@ resource "ibm_cos_bucket" "cos-bucket-memories" {
     }
   }
   dynamic "activity_tracking" {
-    for_each = (var.activity_tracking == null ? [] :
-               (var.activity_tracking.activity_tracker_crn == null ||
-                var.activity_tracking.activity_tracker_crn == "" ? [] :
-                tolist([var.activity_tracking])))
+    for_each = [for e in var.activities_tracking: {
+      activity_tracker_crn = e.activity_tracker_crn
+      read_data_events = lookup(e, "read_data_events", false)
+      write_data_events = lookup(e, "write_data_events", false)
+    }]
     content {
       activity_tracker_crn = activity_tracking.value.activity_tracker_crn
-      read_data_events = lookup(activity_tracking.value, "read_data_events", false)
-      write_data_events = lookup(activity_tracking.value, "write_data_events", false)
+      read_data_events = activity_tracking.value.read_data_events
+      write_data_events = activity_tracking.value.write_data_events
     }
   }
   dynamic "archive_rule" {
@@ -164,7 +154,7 @@ resource "ibm_cos_bucket" "cos-bucket-memories" {
 resource "ibm_resource_key" "cos-manager-memories" {
   name = "cos-manager-memories"
   role = "Manager"
-  resource_instance_id = data.ibm_resource_instance.cos-instance-memories.id
+  resource_instance_id = data.ibm_resource_instance.cos-instance.id
   parameters = {
     "HMAC" = true
   }
@@ -173,21 +163,8 @@ resource "ibm_resource_key" "cos-manager-memories" {
 # resource "ibm_resource_key" "cos-writer-memories" {
 #   name = "cos-writer-memories"
 #   role = "Writer"
-#   resource_instance_id = ibm_resource_instance.cos-instance-memories.id
+#   resource_instance_id = ibm_resource_instance.cos-instance.id
 #   parameters = {
 #     HMAC : true
 #   }
-# }
-
-# output "bucket_private_endpoint" {
-#   value = ibm_cos_bucket.cos-bucket-memories.s3_endpoint_private
-# }
-
-# output "bucket_public_endpoint" {
-#   value = ibm_cos_bucket.cos-bucket-memories.s3_endpoint_public
-# }
-
-# output "cos-bucket-xx-key-jct" {
-#   value = ibm_resource_key.resourceKey
-#   sensitive = false
 # }

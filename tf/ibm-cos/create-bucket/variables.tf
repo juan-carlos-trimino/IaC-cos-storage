@@ -1,6 +1,10 @@
 ############################
 # DECLARE GLOBAL VARIABLES #
 ############################
+variable resource_instance_name {
+  type = string
+}
+
 variable bucket_name_postfix {
   type = bool
 }
@@ -14,6 +18,14 @@ variable storage_class {
 }
 
 variable region_location {
+  type = list(string)
+}
+
+variable cross_region_location {
+  type = list(string)
+}
+
+variable single_site_location {
   type = list(string)
 }
 
@@ -45,11 +57,7 @@ variable activities_tracking {
   })))
 }
 
-
-
-
 variable metrics_monitoring {
-  description = "Enable metrics tracking with IBM Cloud Monitoring."
   type = list(object({
     metrics_monitoring_crn = string
     request_metrics_enabled = bool
@@ -58,26 +66,9 @@ variable metrics_monitoring {
 }
 
 variable archive_rules {
-  description = "Archive is available in certain regions only."
   type = list(object({
     enable = bool
     days = number
     type = string
   }))
 }
-
-
-
-
-variable plan {
-  type = list(string)
-}
-
-
-
-
-variable location {
-  type = list(string)
-}
-
-

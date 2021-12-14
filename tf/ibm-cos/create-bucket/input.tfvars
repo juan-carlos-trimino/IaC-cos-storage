@@ -18,6 +18,8 @@
 # To destroy the infrastructure.                                                                  #
 # > terraform destroy -var-file="./input.tfvars" -auto-approve                                    #
 ###################################################################################################
+resource_instance_name = "cos-memories-a8eb4d25f69d"
+
 bucket_name_postfix = true
 
 bucket_names = [
@@ -31,13 +33,23 @@ storage_class = [
 ]
 
 region_location = [
-  "us-south",
-  "br-sao"
+  null,
+  null
+]
+
+cross_region_location = [
+  "eu",
+  "eu"
+]
+
+single_site_location = [
+  null,
+  null
 ]
 
 endpoint_type = [
-  "private",
-  "private"
+  "public",
+  "public"
 ]
 
 force_delete = [
@@ -80,60 +92,43 @@ expire_rules = [
 ]
 
 activities_tracking = [
-  [
-    {
-      activity_tracker_crn = ""
-      read_data_events = true
-      write_data_events = true
-    }
-  ],
+  # [
+  #   {
+  #     activity_tracker_crn = ""
+  #     read_data_events = true
+  #     write_data_events = true
+  #   }
+  # ],
+  [],
+  []
+]
+
+metrics_monitoring = [
+  # {
+  #   metrics_monitoring_crn = ""
+  #   request_metrics_enabled = false
+  #   usage_metrics_enabled = false
+  # },
+  # {
+  #   metrics_monitoring_crn = null
+  #   request_metrics_enabled = false
+  #   usage_metrics_enabled = false
+  # }
+  null,
   null
 ]
 
-
-
-
-
-metrics_monitoring = [
-  {
-    metrics_monitoring_crn = ""
-    request_metrics_enabled = false
-    usage_metrics_enabled = false
-  },
-  {
-    metrics_monitoring_crn = null
-    request_metrics_enabled = false
-    usage_metrics_enabled = false
-  }
-]
-
 archive_rules = [
-  {
-    enable = true
-    days = 30
-    type = "Glacier"
-  },
-  {
-    enable = false
-    days = 30
-    type = "Glacier"
-  }
+  # {
+  #   enable = true
+  #   days = 30
+  #   type = "Glacier"
+  # },
+  # {
+  #   enable = true
+  #   days = 90
+  #   type = "Accelerated"
+  # }
+  null,
+  null
 ]
-
-
-
-
-
-plan = [
-  "lite",
-  "standard"
-]
-
-
-location = [
-  "global",
-  "global"
-]
-
-
-

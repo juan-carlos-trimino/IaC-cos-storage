@@ -3,12 +3,9 @@
 To create/delete one or more buckets, open the **input.tfvars** file and set the require arguments.
 For more information, see [ibm_cos_bucket](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/cos_bucket#region_location).
 
----
-**Note**
-
+#### `Note`
 Before creating a bucket, an IBM COS instance must be provisioned.
 
----
 <br>
 
 > bucket_name_postfix (Required, bool)
@@ -22,12 +19,8 @@ If set to true, a unique string will be appended to the bucket name.
 
 A bucket is created/deleted for each entry in the list.
 
----
-**Note**
-
+#### `Note`
 Bucket names *must be globally unique and DNS-compliant*; names between 3 and 63 characters long must be made of lowercase letters, numbers, and dashes. Bucket names must begin and end with a lowercase letter or number. Bucket names resembling IP addresses are not allowed. Bucket names must be unique because all buckets in the public cloud share a global namespace, allowing access to buckets without the need to provide any service instance or account information. It is not possible to create a bucket with a name beginning with **cosv1-** or **account-** as these prefixes are reserved by the system.
-
----
 
 ```
 bucket_names = [
@@ -53,13 +46,36 @@ storage_class = [
 
 > region_location (Optional, list(string))
 
-The location of a regional bucket. Supported values are `au-syd`, `eu-de`, `eu-gb`, `jp-tok`, `us-east`, `us-south`, `ca-tor`, `jp-osa`, and `br-sao`. If this parameter is set, do **not** set `single_site_location` or `cross_region_location` at the same time.
+The location of a regional bucket. Supported values are: `au-syd`, `eu-de`, `eu-gb`, `jp-tok`, `us-east`, `us-south`, `ca-tor`, `jp-osa`, and `br-sao`. If this parameter is set, set `single_site_location = null` and `cross_region_location = null`.
 
 ```
 region_location = [
   "us-south",
-  "us-south",
-  "br-sao"
+  "us-south"
+]
+```
+<br>
+
+> cross_region_location (Optional, list(string))
+
+The cross-regional bucket location. Supported values are: `us`, `eu`, and `ap`. If this parameter is set, set `single_site_location = null` and `region_location = null`.
+
+```
+cross_region_location = [
+  null,
+  null
+]
+```
+<br>
+
+> single_site_location (Optional, list(string))
+
+The location for a single site bucket. Supported values are: `ams03`, `che01`, `hkg02`, `mel01`, `mex01`, `mil01`, `mon01`, `osl01`, `par01`, `sjc04`, `sao01`, `seo01`, `sng01`, and `tor01`. If this parameter is set, set `region_location = null` and `cross_region_location = null`.
+
+```
+single_site_location = [
+  null,
+  null
 ]
 ```
 ***
@@ -82,12 +98,8 @@ endpoint_type = [
 
 If set to true (default), all objects in the bucket will be deleted. Since only empty buckets can be deleted, then the bucket will be deleted.
 
----
-**Note**
-
+#### `Note`
 force_delete will timeout on buckets with a large amount of objects. Twenty-four (24) hours before deleting the bucket, set an expire rule to remove all files over a day old.
-
----
 
 ```
 force_delete = [
@@ -150,49 +162,49 @@ expire_rules = [
 
 > activities_tracking (Optional, list(list(object({activity_tracker_crn = string read_data_events = bool write_data_events = bool}))))
 
-
-Object to enable auditing with IBM Cloud Activity Tracker - Optional - Configure your IBM Cloud Activity Tracker service instance and the type of events that you want to send to your service to audit activity against your bucket. For a list of supported actions, see Bucket actions.
-[Bucket events](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-at-events#at-actions-mngt-2)
-
-For more information, see [IBM Cloud Activity Tracker](https://cloud.ibm.com/docs/activity-tracker?topic=activity-tracker-getting-started).
-
-
-
-
+Use the IBM Cloud Activity Tracker service to track how users and applications interact with the IBM Cloud Object Storage. For more information, see [IBM Cloud Activity Tracker](https://cloud.ibm.com/docs/activity-tracker?topic=activity-tracker-getting-started). To configure the IBM Cloud Activity Tracker service instance and the type of events to send to the service to audit activity against the bucket, see [Bucket events](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-at-events#at-actions-mngt-2).
 
 ```
 activities_tracking = [
-  [
-    {
-      activity_tracker_crn = ""
-      read_data_events = true
-      write_data_events = true
-    }
-  ],
-  null
+  # [
+  #   {
+  #     activity_tracker_crn = ""
+  #     read_data_events = true
+  #     write_data_events = true
+  #   }
+  # ],
+  [],
+  []
 ]
 ```
+***
+<br>
 
+> metrics_monitoring (Optional, list(object({metrics_monitoring_crn = string request_metrics_enabled = bool usage_metrics_enabled = bool})))
 
+Use the IBM Cloud Monitoring service to monitor the IBM Cloud Object Storage data in the IBM Cloud. The results of the activity can be measured for compliance and other analysis through the web dashboard UI. For more information, see [Using IBM Cloud Monitoring with IBM Cloud Object Storage](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-mm-cos-integration).
 
-
-> metrics_monitoring ()
 ```
 metrics_monitoring = [
-  {
-    metrics_monitoring_crn = ""
-    request_metrics_enabled = false
-    usage_metrics_enabled = false
-  },
-  {
-    metrics_monitoring_crn = null
-    request_metrics_enabled = false
-    usage_metrics_enabled = false
-  }
+  # {
+  #   metrics_monitoring_crn = ""
+  #   request_metrics_enabled = false
+  #   usage_metrics_enabled = false
+  # },
+  # {
+  #   metrics_monitoring_crn = null
+  #   request_metrics_enabled = false
+  #   usage_metrics_enabled = false
+  # }
 ]
 ```
+***
+<br>
 
-> archive_rules ()
+> archive_rules (Optional, list(list(object({enable = bool days = number type = string}))))
+
+IBM Cloud Object Storage "Archive" and "Accelerated Archive" are low cost options for data that is rarely accessed. For more information, see [Archiving and accessing cold data](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-archive).
+
 ```
 archive_rules = [
   {
@@ -201,14 +213,12 @@ archive_rules = [
     type = "Glacier"
   },
   {
-    enable = false
-    days = 30
-    type = "Glacier"
+    enable = true
+    days = 90
+    type = "Accelerated"
   }
 ]
 ```
-
-
 
 
 
