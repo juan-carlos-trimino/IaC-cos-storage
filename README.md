@@ -1,16 +1,50 @@
+# Creation/Deletion of IBM Cloud Object Storage (COS) instances
+
+
+https://cloud.ibm.com/docs/cloud-object-storage/basics?topic=cloud-object-storage-provision
+
+
 # Creation/Deletion of IBM Cloud Object Storage (COS) buckets
 
-To create/delete one or more buckets, open the **input.tfvars** file and set the require arguments.
-For more information, see [ibm_cos_bucket](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/cos_bucket#region_location).
+To create one or more buckets, open the file **input.tfvars** and set the appropriate parameters to the desired values. Please note that some parameters are required while others are optional. Once the file **input.tfvars** is set, execute the appropriate command. For more information about the parameters, see [ibm_cos_bucket](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/cos_bucket#region_location).
 
 #### `Note`
 Before creating a bucket, an IBM COS instance must be provisioned.
 
+## Using Terraform to provision storage
+#### `Note`
+To install Terraform, [download](https://www.terraform.io/downloads.html) the binary executable for the Operating System (OS) being used to a directory in the system’s PATH environment variable. To verify the installation, execute the following command from a terminal.
+> terraform --version
+
+<br>
+
+To initialize Terraform and install the various providers.
+> terraform init
+
+To create a plan for review (no resources are actually provisioned).
+> terraform plan -var-file="./input.tfvars"
+
+To create the infrastructure.
+> terraform apply -var-file="./input.tfvars" -auto-approve
+
+To destroy the infrastructure.
+> terraform destroy -var-file="./input.tfvars" -auto-approve
+
+***
+***
+<br>
+
+> resource_instance_name (Required, string)
+
+The name of the instance to be used for bucket creation.
+
+***
 <br>
 
 > bucket_name_postfix (Required, bool)
 
 If set to true, a unique string will be appended to the bucket name.
+(All buckets in all regions across the globe share a single namespace.)
 
 ***
 <br>
@@ -42,6 +76,11 @@ storage_class = [
 ]
 ```
 ***
+<br>
+
+#### `Note`
+Select the desired [**level of resiliency**](https://cloud.ibm.com/docs/cloud-object-storage/basics?topic=cloud-object-storage-endpoints). Then, select a *location* where the data will be physically stored. Resiliency refers to the scope and scale of the geographic area across which the data is distributed. *Cross Region* resiliency spreads the data across several metropolitan areas, *Regional* resiliency spreads the data across a single metropolitan area, and a *Single Data Center* distributes the data across devices within a single site only.
+
 <br>
 
 > region_location (Optional, list(string))
@@ -219,24 +258,3 @@ archive_rules = [
   }
 ]
 ```
-
-
-
-
-> plan (list(string))
-```
-plan = [
-  "lite",
-  "standard"
-]
-```
-
-
-> location (list(string))
-```
-location = [
-  "global",
-  "global"
-]
-```
-

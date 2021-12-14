@@ -29,21 +29,6 @@ variable service_type {
   default = "cloud-object-storage"
 }
 
-# variable create_timeout {
-#   description = "(Default 10 minutes) Used for Creating Instance."
-#   default = "10m"
-# }
-
-# variable update_timeout {
-#   description = "(Default 10 minutes) Used for Updating Instance."
-#   default = "10m"
-# }
-
-# variable "delete_timeout" {
-#   description = "(Default 10 minutes) Used for Deleting Instance."
-#   default = "10m"
-# }
-
 variable expire_rules {
   description = "An expiration rule deletes objects after a defined period (from the object creation date)."
   type = list(object({

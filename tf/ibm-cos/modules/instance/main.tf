@@ -1,24 +1,4 @@
 /**************************************************************************************************
-----------------------------------------------------
-A Terraform reusable module for provisioning storage
-----------------------------------------------------
-
-Using Terraform to provision storage
-------------------------------------
-(1) Use Terraform to create the infrastructure in the cloud.
-
-Use Terraform
--------------
-To initialize Terraform and install the various providers.
-> terraform init
-
-To create the infrastructure.
--auto-approve - Enable automatic approval; no human intervention is required.
-> terraform apply -auto-approve
-
-To destroy the infrastructure.
-> terraform destroy -auto-approve
-***************************************************************************************************
 Input variables for the module.
 **************************************************************************************************/
 variable "name" {}
@@ -48,11 +28,17 @@ variable "delete_timeout" {
   default = "10m"
 }
 
-# IBM Cloud Object Storage resource.
-resource "ibm_resource_instance" "cos-instance-memories" {
+
+
+
+
+resource "ibm_resource_instance" "cos-instance" {
   name = var.name
   service = var.service_type
   resource_group_id = var.resource_group_id
+  
+  
+  
   plan = var.plan
   location = var.location
   # Some resource types provide a special timeouts nested block argument that allows to customize

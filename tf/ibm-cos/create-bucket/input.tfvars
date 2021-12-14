@@ -1,23 +1,3 @@
-###################################################################################################
-# ----------------------------------------------------                                            #
-# A Terraform reusable module for provisioning storage                                            #
-# ----------------------------------------------------                                            #
-#                                                                                                 #
-# Using Terraform to provision storage                                                            #
-# ------------------------------------                                                            #
-# (1) Use Terraform to create the infrastructure in the cloud.                                    #
-#                                                                                                 #
-# Use Terraform                                                                                   #
-# -------------                                                                                   #
-# To initialize Terraform and install the various providers.                                      #
-# > terraform init                                                                                #
-#                                                                                                 #
-# To create the infrastructure.                                                                   #
-# > terraform apply -var-file="./input.tfvars" -auto-approve                                      #
-#                                                                                                 #
-# To destroy the infrastructure.                                                                  #
-# > terraform destroy -var-file="./input.tfvars" -auto-approve                                    #
-###################################################################################################
 resource_instance_name = "cos-memories-a8eb4d25f69d"
 
 bucket_name_postfix = true
@@ -34,12 +14,12 @@ storage_class = [
 
 region_location = [
   null,
-  null
+  "br-sao"
 ]
 
 cross_region_location = [
   "eu",
-  "eu"
+  null
 ]
 
 single_site_location = [
