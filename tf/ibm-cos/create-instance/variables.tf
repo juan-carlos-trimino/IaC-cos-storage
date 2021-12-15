@@ -2,13 +2,33 @@
 # DECLARE GLOBAL VARIABLES #
 ############################
 variable instance_name_postfix {
-  description = "Add unique postfix to the name of the instance."
   type = bool
 }
 
 variable instance_names {
-  description = "The name of the instance (required)."
   type = list(string)
 }
 
+variable service {
+  type = list(string)
+}
 
+variable plan {
+  type = list(string)
+}
+
+variable location {
+  type = list(string)
+}
+
+variable create_timeout {
+  type = list(string)
+}
+
+variable update_timeout {
+  type = list(string)
+}
+
+variable delete_timeout {
+  type = list(string)
+}

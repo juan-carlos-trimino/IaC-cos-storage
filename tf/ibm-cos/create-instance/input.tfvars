@@ -22,5 +22,28 @@ instance_name_postfix = true
 
 instance_names = [
   "cos-memories-"
-#  "cos-memories-"
+]
+
+service = [
+  "cloud-object-storage"
+]
+
+plan = [
+  "lite"
+]
+
+location = [
+  "global"
+]
+
+create_timeout = [
+  "10m"
+]
+
+update_timeout = [
+  "10m"
+]
+
+delete_timeout = [
+  "10m"
 ]

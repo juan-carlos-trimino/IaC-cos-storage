@@ -27,6 +27,11 @@ single_site_location = [
   null
 ]
 
+role = [
+  "manager",
+  "manager"
+]
+
 endpoint_type = [
   "public",
   "public"

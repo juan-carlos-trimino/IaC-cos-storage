@@ -15,7 +15,11 @@ variable single_site_location {}
 
 variable storage_class {}
 
+variable role {}
+
 variable endpoint_type {}
+
+variable role {}
 
 variable allowed_ip {
   type = list(string)
@@ -136,20 +140,19 @@ resource "ibm_cos_bucket" "cos-bucket" {
   }
 }
 
-resource "ibm_resource_key" "cos-manager-memories" {
-  name = "cos-manager-memories"
-  role = "Manager"
+resource "ibm_resource_key" "cos-key" {
+  name = "${var.bucket_name}-key"
+  role = var.role
   resource_instance_id = data.ibm_resource_instance.cos-instance.id
   parameters = {
-    "HMAC" = true
+    HMAC = true
   }
-}
 
-# resource "ibm_resource_key" "cos-writer-memories" {
-#   name = "cos-writer-memories"
-#   role = "Writer"
-#   resource_instance_id = ibm_resource_instance.cos-instance.id
-#   parameters = {
-#     HMAC : true
-#   }
-# }
+  timeouts {
+    create = "15m"
+    delete = "15m"
+  }
+
+
+
+}

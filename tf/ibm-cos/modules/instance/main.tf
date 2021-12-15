@@ -1,51 +1,31 @@
 /**************************************************************************************************
 Input variables for the module.
 **************************************************************************************************/
-variable "name" {}
+variable name {}
 
-variable "resource_group_id" {}
+variable service {}
 
-variable "plan" {}
+variable resource_group_id {}
 
-variable "location" {}
+variable plan {}
 
-variable "service_type" {
-  default = "cloud-object-storage"
-}
+variable location {}
 
-variable "create_timeout" {
-  description = "(Default 10 minutes) Used for Creating Instance."
-  default = "10m"
-}
+variable create_timeout {}
 
-variable "update_timeout" {
-  description = "(Default 10 minutes) Used for Updating Instance."
-  default = "10m"
-}
+variable update_timeout {}
 
-variable "delete_timeout" {
-  description = "(Default 10 minutes) Used for Deleting Instance."
-  default = "10m"
-}
-
-
-
-
+variable delete_timeout {}
 
 resource "ibm_resource_instance" "cos-instance" {
   name = var.name
-  service = var.service_type
+  service = var.service
   resource_group_id = var.resource_group_id
-  
-  
-  
   plan = var.plan
   location = var.location
-  # Some resource types provide a special timeouts nested block argument that allows to customize
-  # how long certain operations are allowed to take before being considered to have failed.
   timeouts {
-    create = var.create_timeout
-    update = var.update_timeout
-    delete = var.delete_timeout
+    create = var.create_timeout == null || var.create_timeout == "" ? "10m" : var.create_timeout
+    update = var.update_timeout == null || var.update_timeout == "" ? "10m" : var.update_timeout
+    delete = var.delete_timeout == null || var.delete_timeout == "" ? "10m" : var.delete_timeout
   }
 }

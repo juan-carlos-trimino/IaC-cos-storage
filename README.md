@@ -1,15 +1,6 @@
 # Creation/Deletion of IBM Cloud Object Storage (COS) instances
 
-
-https://cloud.ibm.com/docs/cloud-object-storage/basics?topic=cloud-object-storage-provision
-
-
-# Creation/Deletion of IBM Cloud Object Storage (COS) buckets
-
-To create one or more buckets, open the file **input.tfvars** and set the appropriate parameters to the desired values. Please note that some parameters are required while others are optional. Once the file **input.tfvars** is set, execute the appropriate command. For more information about the parameters, see [ibm_cos_bucket](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/cos_bucket#region_location).
-
-#### `Note`
-Before creating a bucket, an IBM COS instance must be provisioned.
+## [Deleting an instance](https://cloud.ibm.com/docs/cloud-object-storage/basics?topic=cloud-object-storage-provision)
 
 ## Using Terraform to provision storage
 #### `Note`
@@ -34,6 +25,123 @@ To destroy the infrastructure.
 ***
 <br>
 
+> instance_name_postfix (Required, bool)
+
+If set to true, a unique string will be appended to the instance name.
+
+***
+<br>
+
+> instance_names (Required, list(string))
+
+An instance is created/deleted for each entry in the list.
+
+```
+instance_names = [
+  "cos-memories-"
+]
+```
+***
+<br>
+
+> service_type (Required, list(string))
+
+The name of the service offering.
+
+```
+service = [
+  "cloud-object-storage"
+]
+```
+***
+<br>
+
+> plan (Required, list(string))
+
+The name of the plan type supported by service. Supported plans are: `lite` and `standard`.
+
+```
+plan = [
+  "lite"
+]
+```
+***
+<br>
+
+> location (Required, list(string))
+
+Target location or environment to create the resource instance.
+
+```
+location = [
+  "global"
+]
+```
+***
+<br>
+
+#### `Note`
+Some resource types provide a special timeouts nested block argument that allows to customize how long certain operations are allowed to take before being considered to have failed.
+
+<br>
+
+> create_timeout (Optional, list(string))
+
+Used for Creating Instance (default 10 minutes).
+
+```
+create_timeout = [
+  "10m"
+]
+```
+<br>
+
+> update_timeout (Optional, list(string))
+
+Used for Updating Instance (default 10 minutes).
+
+```
+update_timeout = [
+  "10m"
+]
+```
+<br>
+
+> delete_timeout (Optional, list(string))
+
+Used for Deleting Instance (default 10 minutes).
+
+```
+delete_timeout = [
+  "10m"
+]
+```
+***
+<br>
+
+
+
+
+https://cloud.ibm.com/docs/cloud-object-storage/basics?topic=cloud-object-storage-provision
+
+
+https://cloud.ibm.com/docs/account?topic=account-rgs&interface=ui
+
+
+
+
+
+# Creation/Deletion of IBM Cloud Object Storage (COS) buckets
+
+To create one or more buckets, open the file **input.tfvars** and set the appropriate parameters to the desired values. Please note that some parameters are required while others are optional. Once the file **input.tfvars** is set, execute the appropriate command. For more information about the parameters, see [ibm_cos_bucket](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/cos_bucket#region_location).
+
+#### `Note`
+Before creating a bucket, an IBM COS instance must be provisioned.
+
+***
+***
+<br>
+
 > resource_instance_name (Required, string)
 
 The name of the instance to be used for bucket creation.
@@ -43,8 +151,8 @@ The name of the instance to be used for bucket creation.
 
 > bucket_name_postfix (Required, bool)
 
-If set to true, a unique string will be appended to the bucket name.
-(All buckets in all regions across the globe share a single namespace.)
+If set to true, a unique string will be appended to the bucket name. Since 
+*all buckets in all regions across the globe share a single namespace*, a common approach to ensure uniqueness is to append a UUID suffix to bucket names.
 
 ***
 <br>
@@ -119,6 +227,17 @@ single_site_location = [
 ```
 ***
 <br>
+
+> role
+
+
+
+
+
+
+
+
+
 
 > endpoint_type (Optional, list(string))
 
@@ -258,3 +377,24 @@ archive_rules = [
   }
 ]
 ```
+
+
+
+https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/resource_key
+
+The ibm_resource_key provides the following Timeouts configuration options:
+
+create - (Default 10 minutes) Used for Creating Key.
+delete - (Default 10 minutes) Used for Deleting Key.
+
+name - (Required, Forces new resource, String) A descriptive name used to identify a resource key.
+
+role - (Required, Forces new resource, String) The name of the user role. Valid roles are Writer, Reader, Manager, Administrator, Operator, Viewer, and Editor.
+
+
+crn - (String) The full Cloud Resource Name (CRN) associated with the key.
+  parameters = {
+     HMAC: true
+  }
+
+  https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-uhc-hmac-credentials-main

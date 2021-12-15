@@ -17,31 +17,8 @@ variable ibmcloud_api_key {
   default = "*********************************"
 }
 
-variable region {
-  description = "The IBM Cloud region. The default value is us-south."
-  default = "*******"
-}
-
 variable resource_group_name {
   description = "The name of the IBM Cloud resource group."
-  default = "********"
-}
-
-variable region_location {
-  description = "The location of a regional bucket."
-  # Supported values are: au-syd, eu-de, eu-gb, jp-tok, us-east, us-south, ca-tor, jp-osa, br-sao.
-  # If you set this parameter, do not set "single_site_location" or "cross_region_location" at the
-  # same time.
-  default = "*******"
-}
-
-variable plan {
-  description = "The name of the plan type supported by service (required)."
-  default = "******"
-}
-
-variable location {
-  description = "Target location or environment to create the resource instance."
   default = "********"
 }
 
