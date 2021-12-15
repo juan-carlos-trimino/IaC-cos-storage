@@ -15,8 +15,6 @@ variable single_site_location {}
 
 variable storage_class {}
 
-variable role {}
-
 variable endpoint_type {}
 
 variable role {}

@@ -13,6 +13,7 @@ module "cos-bucket" {
   storage_class = var.storage_class[count.index]
   force_delete = var.force_delete[count.index]
   endpoint_type = var.endpoint_type[count.index]
+  role = var.role[count.index]
   allowed_ip = var.allowed_ip[count.index]
   expire_rules = var.expire_rules[count.index]
   activities_tracking = var.activities_tracking[count.index]

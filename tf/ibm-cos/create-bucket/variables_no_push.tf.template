@@ -17,11 +17,6 @@ variable ibmcloud_api_key {
   default = "**************************"
 }
 
-variable region {
-  description = "The IBM Cloud region. The default value is us-south."
-  default = "*****"
-}
-
 variable resource_group_name {
   description = "The name of the IBM Cloud resource group."
   default = "******"

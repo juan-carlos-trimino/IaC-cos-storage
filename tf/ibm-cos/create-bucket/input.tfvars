@@ -1,4 +1,4 @@
-resource_instance_name = "cos-memories-a8eb4d25f69d"
+resource_instance_name = "cos-memories-dc8e33b8fa6c"
 
 bucket_name_postfix = true
 
@@ -28,8 +28,8 @@ single_site_location = [
 ]
 
 role = [
-  "manager",
-  "manager"
+  "Manager",
+  "Manager"
 ]
 
 endpoint_type = [

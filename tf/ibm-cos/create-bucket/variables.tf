@@ -17,10 +17,6 @@ variable storage_class {
   type = list(string)
 }
 
-variable role {
-  type = list(string)
-}
-
 variable region_location {
   type = list(string)
 }
@@ -30,6 +26,10 @@ variable cross_region_location {
 }
 
 variable single_site_location {
+  type = list(string)
+}
+
+variable role {
   type = list(string)
 }
 
