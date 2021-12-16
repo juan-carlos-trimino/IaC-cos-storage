@@ -40,7 +40,8 @@ An instance is created/deleted for each entry in the list.
 
 ```
 instance_names = [
-  "cos-memories-"
+  "cos-memories1-",
+  "cos-memories2-"
 ]
 ```
 ***
@@ -48,10 +49,11 @@ instance_names = [
 
 > service_type (Required, list(string))
 
-The name of the service offering.
+The name of the service offering. The default is `cloud-object-storage`.
 
 ```
 service = [
+  "cloud-object-storage",
   "cloud-object-storage"
 ]
 ```
@@ -60,11 +62,12 @@ service = [
 
 > plan (Required, list(string))
 
-The name of the plan type supported by service. Supported plans are: `lite` and `standard`.
+The name of the plan type supported by service. Supported plans are: `lite` (default) and `standard`.
 
 ```
 plan = [
-  "lite"
+  "lite",
+  "standard"
 ]
 ```
 ***
@@ -72,10 +75,11 @@ plan = [
 
 > location (Required, list(string))
 
-Target location or environment to create the resource instance.
+Target location or environment to create the resource instance. The default is `global`.
 
 ```
 location = [
+  "global",
   "global"
 ]
 ```
@@ -89,33 +93,36 @@ Some resource types provide a special timeouts nested block argument that allows
 
 > create_timeout (Optional, list(string))
 
-Used for Creating Instance (default 10 minutes).
+Used for Creating Instance (default `10 minutes`).
 
 ```
 create_timeout = [
-  "10m"
+  "10m",
+  "15m"
 ]
 ```
 <br>
 
 > update_timeout (Optional, list(string))
 
-Used for Updating Instance (default 10 minutes).
+Used for Updating Instance (default `10 minutes`).
 
 ```
 update_timeout = [
-  "10m"
+  "10m",
+  "15m"
 ]
 ```
 <br>
 
 > delete_timeout (Optional, list(string))
 
-Used for Deleting Instance (default 10 minutes).
+Used for Deleting Instance (default `10 minutes`).
 
 ```
 delete_timeout = [
-  "10m"
+  "10m",
+  "15m"
 ]
 ```
 ***

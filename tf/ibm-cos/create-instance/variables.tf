@@ -11,24 +11,30 @@ variable instance_names {
 
 variable service {
   type = list(string)
+  default = []
 }
 
 variable plan {
   type = list(string)
+  default = []
 }
 
 variable location {
   type = list(string)
+  default = []
 }
 
 variable create_timeout {
   type = list(string)
+  default = []
 }
 
 variable update_timeout {
   type = list(string)
+  default = []
 }
 
 variable delete_timeout {
   type = list(string)
+  default = []
 }
