@@ -15,18 +15,22 @@ variable bucket_names {
 
 variable storage_class {
   type = list(string)
+  default = []
 }
 
 variable region_location {
   type = list(string)
+  default = []
 }
 
 variable cross_region_location {
   type = list(string)
+  default = []
 }
 
 variable single_site_location {
   type = list(string)
+  default = []
 }
 
 variable role {
@@ -35,14 +39,17 @@ variable role {
 
 variable endpoint_type {
   type = list(string)
+  default = []
 }
 
 variable force_delete {
   type = list(bool)
+  default = []
 }
 
 variable allowed_ip {
   type = list(list(string))
+  default = []
 }
 
 variable expire_rules {
@@ -59,6 +66,7 @@ variable activities_tracking {
     read_data_events = bool
     write_data_events = bool
   })))
+  default = []
 }
 
 variable metrics_monitoring {
@@ -67,6 +75,7 @@ variable metrics_monitoring {
     request_metrics_enabled = bool
     usage_metrics_enabled = bool
   }))
+  default = []
 }
 
 variable archive_rules {
@@ -75,4 +84,5 @@ variable archive_rules {
     days = number
     type = string
   }))
+  default = []
 }

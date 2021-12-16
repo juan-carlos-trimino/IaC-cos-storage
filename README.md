@@ -2,6 +2,8 @@
 
 ## [Deleting an instance](https://cloud.ibm.com/docs/cloud-object-storage/basics?topic=cloud-object-storage-provision)
 
+<br>
+
 ## Using Terraform to provision storage
 #### `Note`
 To install Terraform, [download](https://www.terraform.io/downloads.html) the binary executable for the Operating System (OS) being used to a directory in the system’s PATH environment variable. To verify the installation, execute the following command from a terminal.
@@ -119,18 +121,6 @@ delete_timeout = [
 ***
 <br>
 
-
-
-
-https://cloud.ibm.com/docs/cloud-object-storage/basics?topic=cloud-object-storage-provision
-
-
-https://cloud.ibm.com/docs/account?topic=account-rgs&interface=ui
-
-
-
-
-
 # Creation/Deletion of IBM Cloud Object Storage (COS) buckets
 
 To create one or more buckets, open the file **input.tfvars** and set the appropriate parameters to the desired values. Please note that some parameters are required while others are optional. Once the file **input.tfvars** is set, execute the appropriate command. For more information about the parameters, see [ibm_cos_bucket](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/cos_bucket#region_location).
@@ -175,12 +165,12 @@ bucket_names = [
 
 > storage_class (Required, list(string))
 
-The storage class for the bucket. For more information, see [Use storage classes](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-classes).
+The storage class for the bucket. For more information, see [Use storage classes](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-classes). The default value is `smart`.
 
 ```
 storage_class = [
   "smart",
-  "smart"
+  "standard"
 ]
 ```
 ***
@@ -193,46 +183,71 @@ Select the desired [**level of resiliency**](https://cloud.ibm.com/docs/cloud-ob
 
 > region_location (Optional, list(string))
 
-The location of a regional bucket. Supported values are: `au-syd`, `eu-de`, `eu-gb`, `jp-tok`, `us-east`, `us-south`, `ca-tor`, `jp-osa`, and `br-sao`. If this parameter is set, set `single_site_location = null` and `cross_region_location = null`.
+The location of a regional bucket. Supported values are: `au-syd`, `eu-de`, `eu-gb`, `jp-tok`, `us-east`, `us-south`, `ca-tor`, `jp-osa`, and `br-sao`. If this parameter is used, do not set `single_site_location` or `cross_region_location` at the same time. The default value is `null`.
 
 ```
 region_location = [
   "us-south",
-  "us-south"
+  "br-sao"
 ]
 ```
 <br>
 
 > cross_region_location (Optional, list(string))
 
-The cross-regional bucket location. Supported values are: `us`, `eu`, and `ap`. If this parameter is set, set `single_site_location = null` and `region_location = null`.
+The cross-regional bucket location. Supported values are: `us`, `eu`, and `ap`. If this parameter is used, do not set `single_site_location` or `region_location` at the same time. The default value is `null`.
 
 ```
 cross_region_location = [
-  null,
-  null
+  "us",
+  "eu"
 ]
 ```
 <br>
 
 > single_site_location (Optional, list(string))
 
-The location for a single site bucket. Supported values are: `ams03`, `che01`, `hkg02`, `mel01`, `mex01`, `mil01`, `mon01`, `osl01`, `par01`, `sjc04`, `sao01`, `seo01`, `sng01`, and `tor01`. If this parameter is set, set `region_location = null` and `cross_region_location = null`.
+The location for a single site bucket. Supported values are: `ams03`, `che01`, `hkg02`, `mel01`, `mex01`, `mil01`, `mon01`, `osl01`, `par01`, `sjc04`, `sao01`, `seo01`, `sng01`, and `tor01`. If this parameter is used, do not set `region_location` or `cross_region_location` at the same time. The default value is `null`.
 
 ```
 single_site_location = [
-  null,
-  null
+  "ams03",
+  "tor01"
 ]
 ```
 ***
 <br>
 
-> role
+> role (Required, list(string))
+
+The name of the user role. Valid roles are: `Writer`, `Reader`, `Manager`, `Administrator`, `Operator`, `Viewer`, and `Editor`.
+
+Capitalization matters for the roles.
+
+
+
+https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/resource_key
+
+
+https://cloud.ibm.com/docs/account?topic=account-custom-roles
 
 
 
 
+The ibm_resource_key provides the following Timeouts configuration options:
+
+create - (Default 10 minutes) Used for Creating Key.
+delete - (Default 10 minutes) Used for Deleting Key.
+
+
+https://cloud.ibm.com/docs/account?topic=account-iam-service-roles-actions
+
+crn - (String) The full Cloud Resource Name (CRN) associated with the key.
+  parameters = {
+     HMAC: true
+  }
+
+  https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-uhc-hmac-credentials-main
 
 
 
@@ -245,7 +260,7 @@ The type of endpoint (`public` (default), `private`, or `direct`) to be used for
 
 ```
 endpoint_type = [
-  "public",
+  "private",
   "public"
 ]
 ```
@@ -254,7 +269,7 @@ endpoint_type = [
 
 > force_delete (Optional, list(bool))
 
-If set to true (default), all objects in the bucket will be deleted. Since only empty buckets can be deleted, then the bucket will be deleted.
+If set to `true` (default), all objects in the bucket will be deleted. Since only empty buckets can be deleted, then the bucket will be deleted.
 
 #### `Note`
 force_delete will timeout on buckets with a large amount of objects. Twenty-four (24) hours before deleting the bucket, set an expire rule to remove all files over a day old.
@@ -270,19 +285,17 @@ force_delete = [
 
 > allowed_ip (Optional, list(list(string)))
 
-A list of (IPv4 or IPv6 addresses in CIDR format) allowed continuous non-overlapping IP address ranges for the container. If a request from a client IP that is not in this IP address list, the client request would be rejected. If not provided, bucket is allowed to be accessed from any IP address.
+A list of (IPv4 or IPv6 addresses in CIDR format) allowed continuous non-overlapping IP address ranges for the container. If a request from a client IP that is not in this IP address list, the client request would be rejected. If not provided, the bucket is allowed to be accessed from any IP address. The default value is `null`.
 
 ```
 allowed_ip = [
-  # [
-  #   "192.168.10.0/24",
-  #   "192.168.25.200/32"
-  # ],
-  # [
-  #   "192.169.10.100/30"
-  # ]
-  null,
-  null
+  [
+    "192.168.10.0/24",
+    "192.168.25.200/32"
+  ],
+  [
+    "192.169.10.100/30"
+  ]
 ]
 ```
 ***
@@ -320,19 +333,24 @@ expire_rules = [
 
 > activities_tracking (Optional, list(list(object({activity_tracker_crn = string read_data_events = bool write_data_events = bool}))))
 
-Use the IBM Cloud Activity Tracker service to track how users and applications interact with the IBM Cloud Object Storage. For more information, see [IBM Cloud Activity Tracker](https://cloud.ibm.com/docs/activity-tracker?topic=activity-tracker-getting-started). To configure the IBM Cloud Activity Tracker service instance and the type of events to send to the service to audit activity against the bucket, see [Bucket events](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-at-events#at-actions-mngt-2).
+Use the IBM Cloud Activity Tracker service to track how users and applications interact with the IBM Cloud Object Storage. For more information, see [IBM Cloud Activity Tracker](https://cloud.ibm.com/docs/activity-tracker?topic=activity-tracker-getting-started). To configure the IBM Cloud Activity Tracker service instance and the type of events to send to the service to audit activity against the bucket, see [Bucket events](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-at-events#at-actions-mngt-2). The default value is `an empty list`.
 
 ```
 activities_tracking = [
-  # [
-  #   {
-  #     activity_tracker_crn = ""
-  #     read_data_events = true
-  #     write_data_events = true
-  #   }
-  # ],
-  [],
-  []
+  [
+    {
+      activity_tracker_crn = "ibm_resource_instance.activity_tracker1.id"
+      read_data_events = true
+      write_data_events = true
+    }
+  ],
+  [
+    {
+      activity_tracker_crn = "ibm_resource_instance.activity_tracker2.id"
+      read_data_events = true
+      write_data_events = true
+    }
+  ]
 ]
 ```
 ***
@@ -340,20 +358,20 @@ activities_tracking = [
 
 > metrics_monitoring (Optional, list(object({metrics_monitoring_crn = string request_metrics_enabled = bool usage_metrics_enabled = bool})))
 
-Use the IBM Cloud Monitoring service to monitor the IBM Cloud Object Storage data in the IBM Cloud. The results of the activity can be measured for compliance and other analysis through the web dashboard UI. For more information, see [Using IBM Cloud Monitoring with IBM Cloud Object Storage](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-mm-cos-integration).
+Use the IBM Cloud Monitoring service to monitor the IBM Cloud Object Storage data in the IBM Cloud. The results of the activity can be measured for compliance and other analysis through the web dashboard UI. For more information, see [Using IBM Cloud Monitoring with IBM Cloud Object Storage](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-mm-cos-integration). The default value is `null`.
 
 ```
 metrics_monitoring = [
-  # {
-  #   metrics_monitoring_crn = ""
-  #   request_metrics_enabled = false
-  #   usage_metrics_enabled = false
-  # },
-  # {
-  #   metrics_monitoring_crn = null
-  #   request_metrics_enabled = false
-  #   usage_metrics_enabled = false
-  # }
+  {
+    metrics_monitoring_crn = "data.ibm_resource_group.cos_group1.id"
+    request_metrics_enabled = false
+    usage_metrics_enabled = false
+  },
+  {
+    metrics_monitoring_crn = "data.ibm_resource_group.cos_group2.id"
+    request_metrics_enabled = false
+    usage_metrics_enabled = false
+  }
 ]
 ```
 ***
@@ -361,7 +379,7 @@ metrics_monitoring = [
 
 > archive_rules (Optional, list(list(object({enable = bool days = number type = string}))))
 
-IBM Cloud Object Storage "Archive" and "Accelerated Archive" are low cost options for data that is rarely accessed. For more information, see [Archiving and accessing cold data](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-archive).
+IBM Cloud Object Storage "Archive" and "Accelerated Archive" are low cost options for data that is rarely accessed. For more information, see [Archiving and accessing cold data](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-archive). The default value is `null`.
 
 ```
 archive_rules = [
@@ -377,24 +395,3 @@ archive_rules = [
   }
 ]
 ```
-
-
-
-https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/resource_key
-
-The ibm_resource_key provides the following Timeouts configuration options:
-
-create - (Default 10 minutes) Used for Creating Key.
-delete - (Default 10 minutes) Used for Deleting Key.
-
-name - (Required, Forces new resource, String) A descriptive name used to identify a resource key.
-
-role - (Required, Forces new resource, String) The name of the user role. Valid roles are Writer, Reader, Manager, Administrator, Operator, Viewer, and Editor.
-
-
-crn - (String) The full Cloud Resource Name (CRN) associated with the key.
-  parameters = {
-     HMAC: true
-  }
-
-  https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-uhc-hmac-credentials-main
