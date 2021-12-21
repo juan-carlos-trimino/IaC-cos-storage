@@ -17,6 +17,7 @@ module "cos-bucket" {
   force_delete = length(var.force_delete) != 0 ? var.force_delete[count.index] : true
   endpoint_type = length(var.endpoint_type) != 0 ? var.endpoint_type[count.index] : "public"
   role = var.role[count.index]
+  hmac = length(var.hmac) != 0 ? var.hmac[count.index] : false
   allowed_ip = length(var.allowed_ip) != 0 ? var.allowed_ip[count.index] : null
   expire_rules = var.expire_rules[count.index]
   activities_tracking = length(var.activities_tracking) != 0 ? var.activities_tracking[count.index] : []

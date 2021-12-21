@@ -19,6 +19,10 @@ variable endpoint_type {}
 
 variable role {}
 
+variable hmac {
+  type = bool
+}
+
 variable allowed_ip {
   type = list(string)
 }
@@ -143,14 +147,10 @@ resource "ibm_resource_key" "cos-key" {
   role = var.role
   resource_instance_id = data.ibm_resource_instance.cos-instance.id
   parameters = {
-    HMAC = true
+    HMAC = var.hmac
   }
-
   timeouts {
-    create = "15m"
-    delete = "15m"
+    create = "15m"  # (Default 10 minutes) Used for Creating Key.
+    delete = "15m"  # (Default 10 minutes) Used for Deleting Key.
   }
-
-
-
 }

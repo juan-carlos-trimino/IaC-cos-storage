@@ -37,6 +37,11 @@ variable role {
   type = list(string)
 }
 
+variable hmac {
+  type = list(bool)
+  default = []
+}
+
 variable endpoint_type {
   type = list(string)
   default = []

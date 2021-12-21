@@ -1,4 +1,4 @@
-resource_instance_name = "cos-memories-dc8e33b8fa6c"
+resource_instance_name = "cos-memories-63becb27f5fa"
 
 bucket_name_postfix = true
 
@@ -8,13 +8,18 @@ bucket_names = [
 ]
 
 region_location = [
-  "us-south",
+  "br-sao",
   "br-sao"
 ]
 
 role = [
-  "Manager",
-  "Manager"
+  "Writer",
+  "Writer"
+]
+
+hmac = [
+  true,
+  false
 ]
 
 expire_rules = [

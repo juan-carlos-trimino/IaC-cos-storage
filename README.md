@@ -227,39 +227,31 @@ single_site_location = [
 
 > role (Required, list(string))
 
-The name of the user role. Valid roles are: `Writer`, `Reader`, `Manager`, `Administrator`, `Operator`, `Viewer`, and `Editor`.
+The name of the user role. Valid roles are: `Writer`, `Reader`, `Manager`, `Administrator`, `Operator`, `Viewer`, and `Editor`. Capitalization matters for the roles.
 
-Capitalization matters for the roles.
+```
+role = [
+  "Writer",
+  "writer"
+]
+```
+***
+<br>
 
+> hmac (Optional, list(bool))
 
+`HMAC` credentials consist of an `Access Key` and `Secret Key` paired for use with S3-compatible tools and libraries that require authentication. After the `Service Credential` is created, the `HMAC Key` is included in the `cos_hmac_keys field`. The default value is `false`.
+<br><br>
+In general `IAM API Keys` are the *preferred method* of authentication for IBM COS. `HMAC` is supported primarily for compatibility with an earlier version with applications which migrated from `IaaS` {site.data.keyword.cos_short} and legacy S3 applications. `IAM` is also natively supported when developing applications with the COS SDKs. Token expiration and refresh are handled automatically to simplify the process.
 
-https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/resource_key
-
-
-https://cloud.ibm.com/docs/account?topic=account-custom-roles
-
-
-
-
-The ibm_resource_key provides the following Timeouts configuration options:
-
-create - (Default 10 minutes) Used for Creating Key.
-delete - (Default 10 minutes) Used for Deleting Key.
-
-
-https://cloud.ibm.com/docs/account?topic=account-iam-service-roles-actions
-
-crn - (String) The full Cloud Resource Name (CRN) associated with the key.
-  parameters = {
-     HMAC: true
-  }
-
-  https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-uhc-hmac-credentials-main
-
-
-
-
-
+```
+hmac = [
+  false,
+  true
+]
+```
+***
+<br>
 
 > endpoint_type (Optional, list(string))
 
