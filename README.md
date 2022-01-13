@@ -6,7 +6,7 @@
 
 ## Using Terraform to provision storage
 #### `Note`
-To install Terraform, [download](https://www.terraform.io/downloads.html) the binary executable for the Operating System (OS) being used to a directory in the system’s PATH environment variable. To verify the installation, execute the following command from a terminal.
+To install Terraform, [download](https://www.terraform.io/downloads.html) the binary executable for the Operating System (OS) being used to a directory in the system's PATH environment variable. To verify the installation, execute the following command from a terminal.
 > terraform --version
 
 <br>
