@@ -11,19 +11,26 @@
 #            only.                                                                                #
 ###################################################################################################
 # GLOBAL VARIABLES #
-####################
+######################################################################
+# To create the credentials:                                         #
+#  (1)	From the top menu, click "Manage"                            #
+#  (2)	From the drop down menu, click "Access (IAM)"                #
+#  (3)	From the "IAM" menu (left of screen), click the "API keys"   #
+#  (4)	Click the "Create an IBM Cloud API key" button               #
+# Use this key to create the Storage instance as well as the bucket. #
+######################################################################
 variable ibmcloud_api_key {
   description = "The IBM Cloud platform API key."
-  default = "**************************"
+  default = "<required>"
 }
 
 variable resource_group_name {
   description = "The name of the IBM Cloud resource group."
-  default = "******"
+  default = "<required>"
 }
 
 variable ibmcloud_timeout {
   description = "The timeout, expressed in seconds, for interacting with IBM Cloud APIs."
   type = number
-  default = 000
+  default = 900
 }

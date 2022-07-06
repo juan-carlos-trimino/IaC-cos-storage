@@ -1,24 +1,20 @@
-resource_instance_name = "cos-memories-63becb27f5fa"
+resource_instance_name = "cos-memories-c7b2905e208d"
 
 bucket_name_postfix = true
 
 bucket_names = [
-  "cos-bucket-memories-",
   "cos-bucket-memories-"
 ]
 
 region_location = [
-  "br-sao",
-  "br-sao"
+  "us-south"
 ]
 
 role = [
-  "Writer",
   "Writer"
 ]
 
 hmac = [
-  true,
   false
 ]
 
@@ -26,7 +22,7 @@ expire_rules = [
   [
     {
       enable = true
-      days = 3
+      days = 30
       prefix = "logs/"
     },
     {
